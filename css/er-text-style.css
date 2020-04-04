@@ -6,7 +6,7 @@
 
 #coin {
 
-  display: block;
+  display: none;
   margin-top: 40%;
   margin-right: 2px;
 
@@ -20,7 +20,7 @@
 
 }
 
-#log-in {
+#log_in {
 
   display: block;
   font-style: italic;
