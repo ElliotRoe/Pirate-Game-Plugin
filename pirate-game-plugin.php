@@ -22,34 +22,74 @@ add_action('user_register','er_set_intial_game_data_val');
 //enqueues scripts and styles
 function er_load_scripts() {
 
-  wp_enqueue_script('er-script', plugin_dir_url( __FILE__ ) . 'js/er-script.js', array( 'wp-api' ) );
+  wp_enqueue_script('er-script', plugin_dir_url( __FILE__ ) . 'js/er-script.js', array('wp-api','er-onload-handler') );
   wp_enqueue_style('er-text-style', plugin_dir_url(__FILE__) . 'css/er-text-style.css');
 
 }
 
 //adds the sfx only if on the course pages
 function er_add_audio_element() {
-  $currentPage = get_page();
-  $parent = $currentPage->post_parent;
-  if (($parent->post_name)=="Scratch") {
+  if (er_is_current_parent_page(158)) {
     echo '<audio src="https://bexleycodingcamp.com/wp-content/uploads/2020/04/Positive-3.wav" type="audio/wav" class="rewardSFX"></audio>';
   }
 }
 
-add_action('wp_footer', 'er_add_audio_element')
+add_action('wp_footer', 'er_add_audio_element');
 
 //if the page's parent is scratch then waits 2 minutes then when the next page button is pressed it gives the user points
 function er_time_points() {
-  $currentPage = get_page();
-  $parent = $currentPage->post_parent;
-  if (($parent->post_name)=="Scratch") {
-    wp_enqueue_script('er-reward-script', plugin_dir_url( __FILE__ ) . 'js/er-reward-script.js', array('wp-api'));
-    er_set_user_id('er-reward-script');
+
+  //needs to be registered for front end handling of the window.onload function
+  wp_register_script('er-onload-handler',plugin_dir_url( __FILE__ ) . 'js/er-onload-handler.js');
+
+  if (er_is_current_parent_page(158)) {
+
+    //Handles tracking of students' progress
+    $current_id = get_current_user_id();
+
+    $inputArray = array('child_of' => 158,
+						    'sort_column' => 'menu_order');
+		$pages = get_pages($inputArray);
+		$pageNames  = array();
+		for ($i = 0; $i<count($pages);$i++) {
+			array_push($pageNames, get_the_title($pages[$i]));
+		}
+
+		$farthestPage = get_user_meta($current_id, "farthest_page",true);
+		$currentPage = the_title('','',false);
+		update_user_meta($current_id,"current_page", $currentPage);
+
+		$currentIndex = array_search($currentPage,$pageNames);
+		$farthestIndex = array_search($farthestPage,$pageNames);
+
+		if ($farthestIndex == "") {
+			$farthestIndex = 1;
+			update_user_meta($current_id,"farthest_page", $pageNames[1]);
+		}
+
+		if($currentIndex>$farthestIndex) {
+			update_user_meta($current_id,"farthest_page", $currentPage);
+			$farthestIndex=$currentIndex;
+
+      //enqueues the reward script if this is the farthest the  student had ever been
+      wp_enqueue_script('er-reward-script', plugin_dir_url( __FILE__ ) . 'js/er-reward-script.js', array('wp-api','er-onload-handler'));
+      er_set_user_id('er-reward-script');
+		}
+
+		$progress = floor(($farthestIndex-1)/(count($pageNames)-2)*100);
+
+		update_user_meta($current_id,"scratch_progress",$progress);
   }
 }
 
+function er_is_current_parent_page($ID) {
+  global $post;
+  $parentPage = $post->post_parent;
+  return $parentPage==$ID;
+}
+
 //used to give points after watching a video
-add_action('wp_enqueue_scripts', 'er_load_scripts');
+add_action('wp_enqueue_scripts', 'er_time_points');
 
 //updates the js script to display
 function er_set_user_id($script_slug) {
@@ -70,8 +110,8 @@ function er_display_meta($atts) {
 
   //html to return
   $content = '<div class="flex-container">';
-  $content .= '<div><img id="coin" src="https://bexleycodingcamp.com/wp-content/uploads/2020/04/Coin.png" alt="" width="25" height="25"></div>';
-  $content .= '<div><span id="points">00</span></div>';
+  $content .= '<div><img id="coin" src="https://bexleycodingcamp.com/wp-content/uploads/2020/04/Coin.png" alt="" width="30" height="30"></div>';
+  $content .= '<div><span id="points">---</span></div>';
   $content .= '<div><span id="log_in">Please log in to see your doubloons!</span></div>';
   $content .= '</div>';
 

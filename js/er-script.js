@@ -1,6 +1,5 @@
-window.onload = function () {
+addLoadEvent(function() {
 
-  var current_user;
   var points;
   var textElement = document.querySelector("#points");
   var coinImg = document.getElementById('coin');
@@ -12,8 +11,10 @@ window.onload = function () {
     textElement.style.display = "block";
     coinImg.style.display = "block";
     warningElement.style.display = "none";
-    wp.api.loadPromise.done(function () {
-      user = new wp.api.models.User({id: user_id});
+    wp.api.loadPromise.done(function() {
+      user = new wp.api.models.User({
+        id: user_id
+      });
       setInterval(updateVal, 1000);
     });
   } else {
@@ -23,8 +24,8 @@ window.onload = function () {
   }
 
   function updateVal() {
-    user.fetch().done(function () {
-        textElement.innerHTML = JSON.parse(user.get("meta").user_game_data).inventory.money;
+    user.fetch().done(function() {
+      textElement.innerHTML = JSON.parse(user.get("meta").user_game_data).inventory.money;
     });
   }
-}
+});
