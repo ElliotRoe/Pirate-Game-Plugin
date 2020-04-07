@@ -130,3 +130,35 @@ function er_generate_url() {
 }
 
 add_shortcode('generate-game-iframe','er_generate_url');
+
+function er_progress_bar_handler($atts = []) {
+
+  //normalize attribute keys, lowercase
+  $atts = array_change_key_case((array)$atts, CASE_LOWER);
+
+  $title = $atts['title'];
+  $meta_title = $atts['meta_title'];
+
+  wp_enqueue_style('er-progress-style', plugin_dir_url(__FILE__) . 'css/er-progress-style.css');
+  wp_enqueue_script('er-progress-script', plugin_dir_url(__FILE__) . 'js/er-progress-script.js');
+  wp_localize_script('er-progress-script', 'bar_data', array(
+    'title' => $title,
+    'progress' => get_user_meta(get_current_user_id(), $meta_title , true);
+  ));
+
+  $content = '<div class="wrapper">';
+  $content .= '<div class="text-wrapper">';
+  $content .= '<span class="title text"></span>';
+  $content .= '<span class="percent text">--%</span>';
+  $content .= '</div>';
+  $content .= '<div class="outer-bar">';
+  $content .= '<div class="inner-bar">';
+  $content .= '</div>';
+  $content .= '</div>';
+  $content .= '</div>';
+
+  return $content;
+
+}
+
+add_shortcode('meta-progress-bar','er_progress_bar_handler');

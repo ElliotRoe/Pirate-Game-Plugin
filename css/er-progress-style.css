@@ -1,0 +1,51 @@
+* {
+
+  margin: 0;
+  padding: 0;
+
+}
+
+.wrapper {
+
+  width: auto;
+  height: 20px;
+  margin: 0 20%;
+
+}
+
+.text-wrapper {
+
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+
+}
+
+.text {
+
+  font-size: 23px;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 200;
+
+}
+
+.outer-bar {
+
+  height: 4px;
+  width: 100%;
+  background-color: #cecece;
+
+}
+
+.inner-bar {
+
+  height: 100%;
+  width: 55%;
+  background-color: #12499e;
+  animation: animate-positive 2s;
+
+}
+
+@keyframes animate-positive {
+  0% {width: 0%;}
+}
