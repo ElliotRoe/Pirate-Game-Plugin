@@ -139,11 +139,19 @@ function er_progress_bar_handler($atts = []) {
   $title = $atts['title'];
   $meta_title = $atts['meta_title'];
 
+
+  if (get_user_meta(get_current_user_id(), 'scratch_progress' , true) == 0) {
+    $permalink = get_post_permalink(get_page_by_title( 'Unit 1, Lesson 1'));
+  } else {
+    $permalink = get_post_permalink(get_page_by_title( get_user_meta(get_current_user_id(), 'farthest_page' , true)));
+  }
+
   wp_enqueue_style('er-progress-style', plugin_dir_url(__FILE__) . 'css/er-progress-style.css');
-  wp_enqueue_script('er-progress-script', plugin_dir_url(__FILE__) . 'js/er-progress-script.js');
+  wp_enqueue_script('er-progress-script', plugin_dir_url(__FILE__) . 'js/er-progress-script.js', array('er-onload-handler'));
   wp_localize_script('er-progress-script', 'bar_data', array(
     'title' => $title,
-    'progress' => get_user_meta(get_current_user_id(), $meta_title , true);
+    'progress' => get_user_meta(get_current_user_id(), $meta_title , true),
+    'permalink' => $permalink
   ));
 
   $content = '<div class="wrapper">';

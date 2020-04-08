@@ -9,7 +9,6 @@
 
   width: auto;
   height: 20px;
-  margin: 0 20%;
 
 }
 
@@ -25,7 +24,7 @@
 
   font-size: 23px;
   font-family: 'Source Sans Pro', sans-serif;
-  font-weight: 200;
+  font-weight: 400;
 
 }
 
@@ -40,7 +39,7 @@
 .inner-bar {
 
   height: 100%;
-  width: 55%;
+  width: 0%;
   background-color: #12499e;
   animation: animate-positive 2s;
 

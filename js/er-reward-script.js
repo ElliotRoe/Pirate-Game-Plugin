@@ -24,7 +24,7 @@ addLoadEvent(function() {
       meta = current_user.get("meta");
       temp = JSON.parse(meta.user_game_data);
 
-      setTimeout(updateReward, 180000);
+      setTimeout(updateReward, 40000);
     });
   });
 
