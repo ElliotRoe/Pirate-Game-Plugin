@@ -1,2 +1,2 @@
 # pirate-game-plugin
-Custom plugin I made specifically for my pirate mini game on the bexleycodingcamp.com. 
+A custom wordpress plugin I made specifically for my pirate mini game on bexleycodingcamp.com. 
